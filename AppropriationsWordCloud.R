@@ -2,24 +2,24 @@
 # Arica Schuett
 # July 28, 2021
 
-install.packages("wordcloud")
+#install.packages("wordcloud")
 library(wordcloud)
-install.packages("RColorBrewer")
+#install.packages("RColorBrewer")
 library(RColorBrewer)
-install.packages("wordcloud2")
+#install.packages("wordcloud2")
 library(wordcloud2)
-install.packages("tm")
+#install.packages("tm")
 library(tm)#Create a vector containing only the text
-install.packages("qdapRegex")
+#install.packages("qdapRegex")
 library(qdapRegex) #removing URLS
-install.packages("webshot")
+#install.packages("webshot")
 library(tidyverse)
 library(csv)
 
-BillRaw <- read_lines("/Users/aricaschuett/Documents/Alex/f1.txt") example
+#BillRaw <- read_lines("/Users/aricaschuett/Documents/Alex/f1.txt") #example
+ArgReports <- read_lines("/Users/aricaschuett/Documents/Alex/HouseAppropriationsReports.txt") #example
 
-
-text <- BillRaw# Create a corpus  
+text <- ArgReports # Create a corpus  
 
 # continue cleaning the text
 text <- 
