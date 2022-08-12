@@ -40,110 +40,106 @@ for URL in URLs:
         
 ## 
 
- 
-j = [i.text for i in s]
-
-file=open('f1.txt','w')
-file.writelines([m[7]])
-
-file.close()
+with open('HouseAppropriationsReports.txt','w') as file_list:
+    for rept in data:
+        file_list.write(data[1])
 
 
 
-# from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize
 
 
-# # how do I do that? It's probably easier to first work with the title column. Maybe first create a variable that extracts that column and turns that into its own array, 
-# # since we don't care about the rest for now.
+# how do I do that? It's probably easier to first work with the title column. Maybe first create a variable that extracts that column and turns that into its own array, 
+# since we don't care about the rest for now.
 
 
-# # this code successfully tokenizes the text
-# #words_text = word_tokenize(m)
-# #words_text
+# this code successfully tokenizes the text
+#words_text = word_tokenize(m)
+#words_text
 
-# # so this means we'd have to loop over each row in the array and tokenize it? 
-# tokenized_text = []
-# for i in range(0, len(m)):
-#   tokenized_text.append(word_tokenize(m[i]))
+# so this means we'd have to loop over each row in the array and tokenize it? 
+tokenized_text = []
+for i in range(0, len(data)):
+  tokenized_text.append(word_tokenize(data[i]))
 
-# #tokenized_text
+#tokenized_text
 
-# # THIS SEEMS TO WORK! We get a list of lists kind of thing here, where each element is a word tokenized title
+# THIS SEEMS TO WORK! We get a list of lists kind of thing here, where each element is a word tokenized title
 
-# # this code now creates one giant cell (unstructured bag of words from the tokenized information). This is preferable for now because we currently don't care about which title a word
-# # came from, we just want to get a general overview
-# # tokenization seems to require going element by element, but presumably we could've done this technique earlier (unless there is some limit on how many elements word_tokenize can deal
-# # with in one go)
-# word_bag = []
-# for text in tokenized_text:
-#   for word in text:
-#     word_bag.append(word)
-# #print(word_bag)
-# print(len(word_bag))
+# this code now creates one giant cell (unstructured bag of words from the tokenized information). This is preferable for now because we currently don't care about which title a word
+# came from, we just want to get a general overview
+# tokenization seems to require going element by element, but presumably we could've done this technique earlier (unless there is some limit on how many elements word_tokenize can deal
+# with in one go)
+word_bag = []
+for text in tokenized_text:
+  for word in text:
+    word_bag.append(word)
+#print(word_bag)
+print(len(word_bag))
 
-# """## Filter Out Stop Words"""
+"""## Filter Out Stop Words"""
 
-# # now need to filter out stop words
-# from nltk.corpus import stopwords
+# now need to filter out stop words
+from nltk.corpus import stopwords
 
-# sw = stopwords.words("english")
-# # add additional words to our stop words
-# sw.extend(['https', '//t.co/', ':', '.', ',', "'", ';', 'amp', "'s", "''", "``", "“", "”", "&", "-", ")", "(" ])
+sw = stopwords.words("english")
+# add additional words to our stop words
+sw.extend(['https', '//t.co/', ':', '.', ',', "'", ';', 'amp', "'s", "''", "``", "“", "”", "&", "-", ")", "(" , "u", "s", "sc"])
 
-# stop_words = set(sw)
-# #print(stop_words)
-# # You can always design your own stop_words list depending on the task
-# # for example, you might want to filter out punctuations
-# import string
-# string.punctuation
-# # this provides a set of all possible punctuation
+stop_words = set(sw)
+#print(stop_words)
+# You can always design your own stop_words list depending on the task
+# for example, you might want to filter out punctuations
+import string
+string.punctuation
+# this provides a set of all possible punctuation
 
-# # Aside: using the set command here makes the loop to filter out stopwords run more efficiently, so it's best
-# # practice to use it. Use the "add" option to extend the number of stopwords 
-# # but the add option alone still throws an error with the list, so for now I'm first extending a list and then
-# # using set afterwards
-# # stop_words = set(stopwords.words("english"))
-# # stop_words.add(add_stop_words2)
-# # apparently we can't just append the stop_words, so will have to use the new variable below as well
-# # stop_words.append(add_stop_words)
+# Aside: using the set command here makes the loop to filter out stopwords run more efficiently, so it's best
+# practice to use it. Use the "add" option to extend the number of stopwords 
+# but the add option alone still throws an error with the list, so for now I'm first extending a list and then
+# using set afterwards
+# stop_words = set(stopwords.words("english"))
+# stop_words.add(add_stop_words2)
+# apparently we can't just append the stop_words, so will have to use the new variable below as well
+# stop_words.append(add_stop_words)
 
-# print(type(word_bag))
+print(type(word_bag))
 
-# # again, this is more complicated for us since we need to loop over each list within the list
+# again, this is more complicated for us since we need to loop over each list within the list
 
-# #This puts all the words in the text in a bag
-# word_bag = []
-# for text in tokenized_text:
-#   for word in text:
-#     word_bag.append(word)
+#This puts all the words in the text in a bag
+word_bag = []
+for text in tokenized_text:
+  for word in text:
+    word_bag.append(word)
 
-# # this filters the list
-# # This removes about 1/3 of the words
-# filtered_list = []
+# this filters the list
+# This removes about 1/3 of the words
+filtered_list = []
 
-# for word in word_bag:
-#   if word.casefold() not in stop_words:
-#     filtered_list.append(word.lower())
-# filtered_list
-# print(len(filtered_list))
+for word in word_bag:
+  if word.casefold() not in stop_words:
+    filtered_list.append(word.lower())
+filtered_list
+print(len(filtered_list))
 
-# from collections import Counter
+from collections import Counter
 
-# words =[]
-# for word in filtered_list:
-#     words.append(word)
+words =[]
+for word in filtered_list:
+    words.append(word)
 
-# word_counts = Counter(words)
+word_counts = Counter(words)
 
-# # checking the most common words in hate speech tweets
-# # You could find thet most common words in hate speech tweets are some racist, sexist, homophobic, and offensive words
-# word_counts.most_common(20)
+# checking the most common words in hate speech tweets
+# You could find thet most common words in hate speech tweets are some racist, sexist, homophobic, and offensive words
+word_counts.most_common(20)
 
 
-# ## ERRRORS FROM WORDCLOUD
-# # Plot the word cloud image
-# #from wordcloud import WordCloud
-# #wordcloud = WordCloud(background_color="white", max_words=5000, contour_width=3, contour_color='steelblue')
-# #wordcloud.generate(','.join(words))
-# #wordcloud.to_image()
+## ERRRORS FROM WORDCLOUD
+#Plot the word cloud image
+from wordcloud import WordCloud
+wordcloud = WordCloud(background_color="white", max_words=5000, contour_width=3, contour_color='steelblue')
+wordcloud.generate(','.join(words))
+wordcloud.to_image()
 
