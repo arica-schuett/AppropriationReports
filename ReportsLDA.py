@@ -6,14 +6,14 @@ Created on Fri Aug 19 17:30:41 2022
 @author: aricaschuett
 """
 
-import nltk
-nltk.download("all")
-import numpy
-import pandas
-import gensim
-import sklearn
+# import nltk
+# nltk.download("all")
+# import numpy
+# import pandas
+# import gensim
+# import sklearn
 
-import pandas as pd
+# import pandas as pd
 
 # Here we use 20-Newsgroups dataset (http://qwone.com/~jason/20Newsgroups/) for this example. 
 # This version of the dataset contains about 11k newsgroups posts from 20 different topics. 
@@ -24,19 +24,14 @@ with open('HouseAppropriationsReports_manualCleanTest.txt') as f:
     data_text = data
     documents = data_text
 
-# !pip install nltk
-# !pip install numpy 
-# !pip install pandas
-# !pip install gensim
-# !pip install sklearn
 
-raw_data
+# raw_data
 
-text = []
-for i in range(0, len(raw_data['content'])):
-  text.append(raw_data['content'][i])
+# text = []
+# for i in range(0, len(raw_data['content'])):
+#   text.append(raw_data['content'][i])
   
-raw_data.head()
+# raw_data.head()
 
 # Importing the needed packages
 from nltk.tokenize import word_tokenize
@@ -47,12 +42,17 @@ from nltk.stem import WordNetLemmatizer
 
 import gensim
 import gensim.corpora as corpora
+#import pyLDAvis
+#import pyLDAvis.gensim_models
+
+
+
 
 # wrapped function
-def extract_topic(text, stopwords):
+def extract_topic(data_text, stopwords):
   # tokenization
   tokenized_text = []
-  for sentence in text:
+  for sentence in data_text:
     tokenized_text.append(word_tokenize(sentence))
 
   punctuations = string.punctuation  + "*" + "/" + "\\" + "_" + "-"
@@ -83,7 +83,7 @@ def extract_topic(text, stopwords):
 # the num_topics is for the exercise. In the real world, we would test different 
   lda_model = gensim.models.ldamodel.LdaModel(corpus=corpus,
                                            id2word=id2word,
-                                           num_topics=20, 
+                                           num_topics=12, 
                                            random_state= 0,
                                            passes = 10,
                                            alpha='auto')
@@ -91,23 +91,68 @@ def extract_topic(text, stopwords):
 
   return lda_model
 
+
+
 # filtering stop words (numbers) and punctuations, and lemmatzing
 # After stopwords
 stop_words = stopwords.words("english")
 stop_words.extend(['from', 'subject', 're', 'edu', 'use', 'line', 'organization', 'university', 'wa', 'ha', "'s", "n't", "'d"])
 
-lda_model = extract_topic(text, stop_words)
+lda_model = extract_topic(data_text, stop_words)
 
-# Importing the needed packages
-from nltk.tokenize import word_tokenize
+
 
 from nltk.corpus import stopwords
-import string
-from nltk.stem import WordNetLemmatizer
 
 # tokenization
 tokenized_text = []
-for sentence in text:
+for sentence in data_text:
   tokenized_text.append(word_tokenize(sentence))
   
   lda_model.print_topics()
+  
+
+from matplotlib import pyplot as plt
+from wordcloud import WordCloud, STOPWORDS
+import matplotlib.colors as mcolors
+
+cols = [color for name, color in mcolors.TABLEAU_COLORS.items()]  # more colors: 'mcolors.XKCD_COLORS'
+
+
+cloud = WordCloud(stopwords=stop_words,
+                  background_color='white',
+                  width=2500,
+                  height=1800,
+                  max_words=20,
+                  colormap='tab10',
+                  color_func=lambda *args, **kwargs: cols[i],
+                  prefer_horizontal=1.0)
+
+topics = lda_model.show_topics(formatted=False)
+
+
+fig, axes = plt.subplots(3,4, figsize=(19,19), sharex=True, sharey=True)                ## Change Plot layout to match number of topics. 
+
+for i, ax in enumerate(axes.flatten()):
+    fig.add_subplot(ax)
+    topic_words = dict(topics[i][1])
+    cloud.generate_from_frequencies(topic_words, max_font_size=300)
+    plt.gca().imshow(cloud)
+    plt.gca().set_title('Topic ' + str(i), fontdict=dict(size=16))
+    plt.gca().axis('off')
+
+
+plt.subplots_adjust(wspace=0, hspace=0)
+plt.axis('off')
+plt.margins(x=0, y=0)
+plt.tight_layout()
+plt.show()
+
+
+
+
+
+
+
+
+
